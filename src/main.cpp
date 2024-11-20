@@ -1,13 +1,17 @@
 #include <Arduino.h>
 #include "sensors.h"
+#include "valves.h"
 
-SENSOR mov("baja", 32, SENSOR_TYPE::PRESSURE, 10.0f, 4096, 355.0f);
-SENSOR mfv("baza", 36, SENSOR_TYPE::TEMPERATURE, 10.0f, 4096, 355.0f);
+SENSOR mov_s("baja", 32, SENSOR_TYPE::PRESSURE, 10.0f, 4096, 355.0f);
+VALVE MOV("mov", 19, VALVE_TYPE::SERVO, 1.0f, false, false, 0.0f, 0.4, 0.4, 0.4);
 
 void setup() {
+
     Serial.begin(9600);
 }
 
 void loop() {
-    delay(1000);
+
+    MOV.SERVO_VALVE_CONTROL(mov_s.readData());
+    delay(10);
 }
