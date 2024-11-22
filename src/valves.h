@@ -17,7 +17,7 @@ private:
     VALVE_TYPE V_TYPE;
 
     Servo VSERVO;
-
+    
     float NOMINAL_PRESSURE;
     float PRESSURE_AT_VALVE;
 
@@ -44,7 +44,7 @@ public:
     void VALVE_TO_IDLE();
     void VALVE_FULLY_OPEN();
     void VALVE_CLOSE();
-    //void UPDATE_CURRENT_PRESSURE(float );
+    void VALVE_TO(float angle);
 
 };
 

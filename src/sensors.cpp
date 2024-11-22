@@ -14,6 +14,7 @@ SENSOR::SENSOR(std::string s_name, uint8_t pin, SENSOR_TYPE S_TYPE, float max_pa
         }
     }
 
+
 float SENSOR::readData(){
     if(S_TYPE == SENSOR_TYPE::PRESSURE){
         float rawValue = analogRead(pin);
