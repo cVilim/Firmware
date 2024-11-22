@@ -6,7 +6,6 @@ VALVE::VALVE(std::string v_name, uint8_t v_pin, VALVE_TYPE V_TYPE, float NOMINAL
 
     if(V_TYPE == VALVE_TYPE::SERVO){
         VSERVO.attach(v_pin);
-        pinMode(v_pin, OUTPUT);
         this->currentAngle = defaultAngle; 
         VSERVO.write(currentAngle);
     }
@@ -18,23 +17,8 @@ VALVE::VALVE(std::string v_name, uint8_t v_pin, VALVE_TYPE V_TYPE, float NOMINAL
 void VALVE::SERVO_VALVE_CONTROL(float P_CURRENT){
     if(V_TYPE == VALVE_TYPE::SERVO){
 
-        unsigned long currentTime = millis();
-        float dT = (currentTime - lastUpdateTime)/1000.0f;
-        lastUpdateTime = currentTime;
-        
-        float difference = P_CURRENT - NOMINAL_PRESSURE;
+        VSERVO.write(P_CURRENT);
 
-        float p_term = KP * difference;
-        float d_term = KD * (difference - prevError) / dT;
-        integral += difference * dT;
-        float i_term = KI * integral;
-
-        float CTRL_OUTPUT = p_term + i_term + d_term;
-
-        currentAngle = constrain(currentAngle + CTRL_OUTPUT, 0.0f, 90.0f);
-        VSERVO.write(currentAngle);
-
-        prevError = difference;
     }
 }
 
