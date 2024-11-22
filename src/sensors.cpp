@@ -21,7 +21,7 @@ float SENSOR::readData(){
         sensorValue = ((float(rawValue) - MIN_READING_P) * MAX_PRESSURE) / (MAX_READING_P - MIN_READING_P);
     }
     else if(S_TYPE == SENSOR_TYPE::TEMPERATURE){
-        //kontrolna logika za MAX31865 i neki MUX
+        //control logic for MAX31865 and mux or whatever
         Serial.println("The sensor that is initiated is a temperature sensor");
     }
     return sensorValue;
