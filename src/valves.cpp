@@ -1,4 +1,7 @@
 #include "valves.h"
+#include <algorithm>
+
+#define CLAMP(value, minVal, maxVal) ((value < minVal) ? minVal : (value > maxVal ? maxVal : value))
 
 VALVE::VALVE(std::string v_name, uint8_t v_pin, VALVE_TYPE V_TYPE, float NOMINAL_PRESSURE, bool IS_OPEN, const bool DEFAULT_IS_OPEN, float defaultAngle, float KI, float KP, float KD)
     : v_name(v_name), v_pin(v_pin), V_TYPE(V_TYPE), NOMINAL_PRESSURE(NOMINAL_PRESSURE), IS_OPEN(IS_OPEN),
@@ -17,7 +20,16 @@ VALVE::VALVE(std::string v_name, uint8_t v_pin, VALVE_TYPE V_TYPE, float NOMINAL
 void VALVE::SERVO_VALVE_CONTROL(float P_CURRENT){
     if(V_TYPE == VALVE_TYPE::SERVO){
 
-        VSERVO.write(P_CURRENT);
+        float error = NOMINAL_PRESSURE - P_CURRENT;
+        integral += error;
+        integral = CLAMP(integral, 0, 90);
+        float derivative = error - prevError;
+        float output = KP * error + KI * integral + KD * derivative;
+        prevError = error;
+        output = CLAMP(output, 0, 90);
+        currentAngle = map(output, 0, 90, 0, 90);
+        Serial.println(currentAngle);
+        VSERVO.write(currentAngle);
 
     }
 }
