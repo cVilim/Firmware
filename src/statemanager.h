@@ -17,49 +17,56 @@ class STATE_HANDLER{
 
 class ENGINE_STATE{
     public:
+        bool parametersOK;
+        bool parametersWithinThreshold;
+        
         virtual ~ENGINE_STATE() = default;
         virtual void handle(STATE_HANDLER& HANDLER) = 0;
         virtual std::string getStateName();
         void transitionTo(STATE_HANDLER& HANDLER, std::shared_ptr<ENGINE_STATE> NEW_STATE);
 };
+
 //derived classes
+
 class IDLE : public ENGINE_STATE{
+    private:
+        bool is_startup_ready;
+
     public:
-        void handle(STATE_HANDLER &HANDLER) override{
-            //idle state logic
-            //time delay and if statement for signal receiving to allow the transition to startup
-            transitionTo(HANDLER, std::make_shared<STARTUP>());     //transitioning to startup
-        }
-        std::string getStateName() override{
-            return "IDLE";
-        }
+        
+        void handle(STATE_HANDLER &HANDLER) override;
+        std::string getStateName() override;
 };
 
 class STARTUP : public ENGINE_STATE{
+    private:
+        bool is_running_ready;
     public:
-        void handle(STATE_HANDLER &HANDLER) override{
-            //startup state logic
-            //no interrupt state logic
-            transitionTo(HANDLER, std::make_shared<RUNNING>());     //transitioning to running if and only if the current parameters are within the threshold - if statement
-            transitionTo(HANDLER, std::make_shared<FAULT>());       //transitioning to fault if and only if the current parameters are outside the threshold - ielse statement
-        }
+    
+        void handle(STATE_HANDLER &HANDLER) override;
+        std::string getStateName() override;
 };
 
 class RUNNING : public ENGINE_STATE{
     public:
-        void handle(STATE_HANDLER &HANDLER) override{
-            //running state logic, time of operation, etc.
-            //force shutdown logic
-            transitionTo(HANDLER, std::make_shared<SHUTDOWN>());        //if the parameters are met->transition to running, if not->fault, ->handle() in main loop function
-        }
+        void handle(STATE_HANDLER &HANDLER) override;
+        std::string getStateName() override;
 };
 
 class SHUTDOWN : public ENGINE_STATE{
-    
+    public:
+        void handle(STATE_HANDLER &HANDLER);
+        std::string getStateName() override;
 };
 
 class FAULT : public ENGINE_STATE{
+    private:
+        bool is_idle_ready;
+    public:
 
+        void handle(STATE_HANDLER &HANDLER);
+        std::string getStateName() override;
 };
+
 
 #endif
