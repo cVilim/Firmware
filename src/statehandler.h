@@ -15,8 +15,6 @@ class STATE{
         virtual ~STATE(){}
         void set_engine(ENGINE* engine);
         virtual void handle() = 0;
-        virtual void doWorkA() = 0;
-        virtual void doWorkB() = 0;
 };
 
 class ENGINE{
@@ -26,15 +24,14 @@ class ENGINE{
         void transition_to(STATE* state);
         ENGINE(STATE* state) : _state(nullptr){ transition_to(state);}
         ~ENGINE() {delete _state;}
-        void requestA(){_state->doWorkA();}
-        void requestB(){_state->doWorkB();}
+        void handle_state(){_state->handle();}
+
 };
 
 class IDLE : public STATE{
     public:
-    void handle() override{Serial.println("HANDLING");}
-    void doWorkA() override{Serial.println("IDLE A");}
-    void doWorkB() override{Serial.println("IDLE B");}
+    void handle() override{Serial.println("HANDLING IDLE");}
+
 };
 
 class STARTUP : public STATE{
@@ -42,9 +39,7 @@ class STARTUP : public STATE{
 };
 
 class RUNNING : public STATE{
-    void handle() override{Serial.println("RUNNING");};
-    void doWorkA() override{Serial.println("RUNNING A");}
-    void doWorkB() override{Serial.println("RUNNING B");}
+    void handle() override{Serial.println("HANDLING RUNNING");};
 };
 
 class SHUTDOWN : public STATE{
